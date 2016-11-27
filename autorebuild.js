@@ -4,7 +4,8 @@ var request = require ('request');
 var config = require('./config.json');
 
 var log;
-var stringToCheck = 'Fork';
+var forkString = 'Fork';
+var rebuildString = 'Finished sync';
 var delegateMonitor = config.delegate;
 var alerted = {};
 var t = new tail("../lisk-test/logs/lisk.log");
@@ -12,10 +13,33 @@ var t = new tail("../lisk-test/logs/lisk.log");
 // write on a specific log file only fork lines
 t.watch()
 t.on("line", data => {
-  log = data;
-  if(log.indexOf(stringToCheck) !== -1)
-    console.log("\nFork line finded in lisk.log\n" + data + "\n");
+    log = data;
+    if(log.indexOf(forkString) !== -1)
+        console.log("\nFork line finded in lisk.log\n" + data + "\n");
+    if(log.indexOf(rebuildString) !== -1)
+        enableForging.then(function(res) {
+            console.log(res);
+        }, function (err) {
+            console.log(err)
+        }
+    );
 });
+
+var enableForging = function() {
+    return new Promise(function (resolve, reject) {
+        request.post(
+            'http://localhost:8000/api/delegates/forging/enable',
+            { json: { secret: ''+ config.secret +'' } },
+            function (error, response, body) {
+                if (!error && response.statusCode == 200) {
+                    resolve('Forging enabled');
+                } else {
+                    reject(error);
+                }
+            }
+        );
+    });
+}
 
 // check if I'm delegateMonitor delegate is forging
 var checkBlocks = function() {
@@ -49,20 +73,19 @@ var checkBlocks = function() {
                                 if (! (delegateList[i].address in alive)) {
                                     alive [delegateList[i].address] = false;
                                     if (! (delegateList[i].address in alerted))
-                                        alerted [delegateList[i].address] = 1;
+                                    alerted [delegateList[i].address] = 1;
                                     else
-                                        alerted [delegateList[i].address] += 1;
+                                    alerted [delegateList[i].address] += 1;
 
                                     if (alerted [delegateList[i].address] == 1 || alerted [delegateList[i].address] % 180 == 0) {
                                         if (delegateList[i].username.indexOf(delegateMonitor)!== -1) {
                                             // if is red rebuild and wait 30 min before rebuilding again
-                                            console.log("\nAurebuild started");
+                                            console.log("\nAutorebuild started");
                                             console.log("Date: " + new Date().toString() + "\n");
-                                            exec.exec('bash ../lisk-test/lisk.sh status',function (error, stdout, stderr) {      // one easy function to capture data/errors
-                                                console.log('stdout: ' + stdout);
-                                                console.log('stderr: ' + stderr);
+                                            exec.exec('bash ../lisk-test/lisk.sh rebuild -u https://testnet-snapshot.lisknode.io',function (error, stdout, stderr) {
+                                                console.log(stdout);
                                                 if (error !== null) {
-                                                  console.log('exec error: ' + error);
+                                                    console.log('exec error: ' + error);
                                                 }
                                             });
                                         }
