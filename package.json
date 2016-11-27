@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "lodash": "^4.16.4",
+    "request": "^2.79.0",
+    "tail": "^1.2.1"
+  },
+  "scripts": {
+    "start": "nodemon autorebuild.js"
+  }
+}
