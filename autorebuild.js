@@ -1,13 +1,13 @@
 var tail = require('tail').Tail;
-var cproc = require('child_process');
+var exec = require('child_process');
 var request = require ('request');
 var config = require('./config.json');
 
 var log;
-var stringToCheck = 'transaction';
+var stringToCheck = 'Fork';
 var delegateMonitor = config.delegate;
 var alerted = {};
-var t = new tail("../lisk-test/log/lisk.log");
+var t = new tail("../lisk-test/logs/lisk.log");
 
 // write on a specific log file only fork lines
 t.watch()
@@ -58,8 +58,12 @@ var checkBlocks = function() {
                                             // if is red rebuild and wait 30 min before rebuilding again
                                             console.log("\nAurebuild started");
                                             console.log("Date: " + new Date().toString() + "\n");
-                                            cproc.spawn('sh', ['../lisk-test/test.sh'], {
-                                                stdio: 'inherit'
+                                            exec.exec('bash ../lisk-test/lisk.sh status',function (error, stdout, stderr) {      // one easy function to capture data/errors
+                                                console.log('stdout: ' + stdout);
+                                                console.log('stderr: ' + stderr);
+                                                if (error !== null) {
+                                                  console.log('exec error: ' + error);
+                                                }
                                             });
                                         }
                                     }
