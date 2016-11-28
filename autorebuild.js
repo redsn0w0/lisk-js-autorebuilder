@@ -11,7 +11,7 @@ var alerted = {};
 var t = new tail("../lisk-test/logs/lisk.log");
 
 var options = {
-    uri: 'http://'+ config.node +'/api/delegates/forging/enable',
+    uri: 'http://'+ config.yournode +'/api/delegates/forging/enable',
     method: 'POST',
     json: {
         "secret": ""+ config.secret +""
