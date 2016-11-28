@@ -27,7 +27,7 @@ var enableForging = function() {
                 reject(error);
             }
         });
-    };
+    });
 };
 
 // write on a specific log file fork lines and forging enabling
