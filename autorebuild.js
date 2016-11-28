@@ -50,6 +50,7 @@ t.on("line", data => {
 
 // check if I'm delegateMonitor delegate is forging
 var checkBlocks = function() {
+    console.log(alerted);
     // blocks scheduler for alerts
     request('http://' + config.node + '/api/delegates/?limit=101&offset=0&orderBy=rate:asc', function (error, response, body) {
         // getting all delegates
@@ -87,7 +88,7 @@ var checkBlocks = function() {
                                     if (alerted [delegateList[i].address] == 1 || alerted [delegateList[i].address] % 180 == 0) {
                                         if (delegateList[i].username.indexOf(delegateMonitor)!== -1) {
                                             // if is red rebuild and wait 30 min before rebuilding again
-                                            console.log("[" + new Date().toString() + "] | Autorebuild started\n");
+                                            console.log("[" + new Date().toString() + "] | Autorebuild started");
                                             exec.exec('bash ../lisk-test/lisk.sh rebuild -u https://testnet-snapshot.lisknode.io',function (error, stdout, stderr) {
                                                 console.log(stdout);
                                                 if (error !== null) {
