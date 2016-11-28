@@ -40,7 +40,7 @@ t.on("line", data => {
     }
     if(log.indexOf(rebuildString) !== -1) {
         console.log("[" + new Date().toString() + "] | Sync finished, enabling forging\n");
-        enableForging.then(function(res) {
+        enableForging().then(function(res) {
             console.log("[" + new Date().toString() + "] | " + res);
         }, function (err) {
             console.log(err)
@@ -50,7 +50,6 @@ t.on("line", data => {
 
 // check if I'm delegateMonitor delegate is forging
 var checkBlocks = function() {
-    console.log(alerted);
     // blocks scheduler for alerts
     request('http://' + config.node + '/api/delegates/?limit=101&offset=0&orderBy=rate:asc', function (error, response, body) {
         // getting all delegates
