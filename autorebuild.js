@@ -39,9 +39,9 @@ t.on("line", data => {
         console.log(data);
     }
     if(log.indexOf(rebuildString) !== -1) {
-        console.log("[" + new Date().toString() + "] | Sync finished, enabling forging\n");
+        console.log("[" + new Date().toString() + "] | Sync finished, enabling forging");
         enableForging().then(function(res) {
-            console.log("[" + new Date().toString() + "] | " + res);
+            console.log("[" + new Date().toString() + "] | " + res + "\n");
         }, function (err) {
             console.log(err)
         }
