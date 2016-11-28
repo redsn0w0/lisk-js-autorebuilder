@@ -1,4 +1,5 @@
 {
-	"node": "IP:7000",
-    "delegate":"nameOfYourDelegate"
+	"node": "localhost:7000",
+    "delegate":"nameOfYourDelegate",
+	"secret":"superSecretPasswd"
 }

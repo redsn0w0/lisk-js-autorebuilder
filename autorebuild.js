@@ -10,36 +10,43 @@ var delegateMonitor = config.delegate;
 var alerted = {};
 var t = new tail("../lisk-test/logs/lisk.log");
 
-// write on a specific log file only fork lines
-t.watch()
-t.on("line", data => {
-    log = data;
-    if(log.indexOf(forkString) !== -1)
-        console.log("\nFork line finded in lisk.log\n" + data + "\n");
-    if(log.indexOf(rebuildString) !== -1)
-        enableForging.then(function(res) {
-            console.log(res);
-        }, function (err) {
-            console.log(err)
-        }
-    );
-});
+var options = {
+    uri: 'http://'+ config.node +'/api/delegates/forging/enable',
+    method: 'POST',
+    json: {
+        "secret": ""+ config.secret +""
+    }
+};
 
 var enableForging = function() {
     return new Promise(function (resolve, reject) {
-        request.post(
-            'http://localhost:8000/api/delegates/forging/enable',
-            { json: { secret: ''+ config.secret +'' } },
-            function (error, response, body) {
-                if (!error && response.statusCode == 200) {
-                    resolve('Forging enabled');
-                } else {
-                    reject(error);
-                }
+        request(options, function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+                resolve('Forging enabled');
+            } else {
+                reject(error);
             }
-        );
-    });
-}
+        });
+    };
+};
+
+// write on a specific log file fork lines and forging enabling
+t.watch()
+t.on("line", data => {
+    log = data;
+    if(log.indexOf(forkString) !== -1) {
+        console.log("[" + new Date().toString() + "] | Fork line finded in lisk.log\n");
+        console.log(data);
+    }
+    if(log.indexOf(rebuildString) !== -1) {
+        console.log("[" + new Date().toString() + "] | Sync finished, enabling forging\n");
+        enableForging.then(function(res) {
+            console.log("[" + new Date().toString() + "] | " + res);
+        }, function (err) {
+            console.log(err)
+        }
+    )};
+});
 
 // check if I'm delegateMonitor delegate is forging
 var checkBlocks = function() {
@@ -80,8 +87,7 @@ var checkBlocks = function() {
                                     if (alerted [delegateList[i].address] == 1 || alerted [delegateList[i].address] % 180 == 0) {
                                         if (delegateList[i].username.indexOf(delegateMonitor)!== -1) {
                                             // if is red rebuild and wait 30 min before rebuilding again
-                                            console.log("\nAutorebuild started");
-                                            console.log("Date: " + new Date().toString() + "\n");
+                                            console.log("[" + new Date().toString() + "] | Autorebuild started\n");
                                             exec.exec('bash ../lisk-test/lisk.sh rebuild -u https://testnet-snapshot.lisknode.io',function (error, stdout, stderr) {
                                                 console.log(stdout);
                                                 if (error !== null) {
