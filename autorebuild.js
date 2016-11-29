@@ -24,8 +24,8 @@ var chooseNode = function() {
         request('http://' + config.node + '/api/peers?state=2&orderBy=height:desc', function (error, response, body) {
             if (!error && response.statusCode == 200) {
                 var data = JSON.parse(body);
-                nodeToUse = data.peers[0].ip;
-                resolve(nodeToUse + ':7000');
+                nodeToUse = data.peers[0].ip + ':7000';
+                resolve(nodeToUse);
             } else {
                 reject(error);
             }
@@ -67,7 +67,8 @@ t.on("line", data => {
 var checkBlocks = function() {
     // blocks scheduler for alerts
     chooseNode().then(function(res) {
-        request('http://' + res + '/api/delegates/?limit=101&offset=0&orderBy=rate:asc', function (error, response, body) {
+        console.log(nodeToUse);
+        request('http://' + nodeToUse + '/api/delegates/?limit=101&offset=0&orderBy=rate:asc', function (error, response, body) {
             // getting all delegates
             if (!error && response.statusCode == 200) {
                 delegateList = [];
@@ -80,11 +81,11 @@ var checkBlocks = function() {
                     }
                 }
                 // checking blocks
-                request('http://' + res + '/api/blocks?limit=100&orderBy=height:desc', function (error, response, body) {
+                request('http://' + nodeToUse + '/api/blocks?limit=100&orderBy=height:desc', function (error, response, body) {
                     if (!error && response.statusCode == 200) {
                         var data = JSON.parse(body);
                         // checking blocks shifting by 100
-                        request('http://' + res + '/api/blocks?limit=100&offset=100&orderBy=height:desc', function (error, response, body) {
+                        request('http://' + nodeToUse + '/api/blocks?limit=100&offset=100&orderBy=height:desc', function (error, response, body) {
                             if (!error && response.statusCode == 200) {
                                 var data2 = JSON.parse(body);
                                 data.blocks = data.blocks.concat(data2.blocks);
@@ -103,7 +104,7 @@ var checkBlocks = function() {
                                         if (alerted [delegateList[i].address] == 1 || alerted [delegateList[i].address] % 180 == 0) {
                                             if (delegateList[i].username.indexOf(delegateMonitor)!== -1) {
                                                 // if is red rebuild and wait 30 min before rebuilding again
-                                                console.log("[" + new Date().toString() + "] | Asking to: " + res);
+                                                console.log("[" + new Date().toString() + "] | Asking to: " + nodeToUse);
                                                 console.log("[" + new Date().toString() + "] | Autorebuild started");
                                                 exec.exec('bash ../lisk-test/lisk.sh rebuild -u https://testnet-snapshot.lisknode.io',function (error, stdout, stderr) {
                                                     console.log(stdout);
@@ -131,7 +132,8 @@ var checkBlocks = function() {
         });
     }, function (err) {
         console.log(err)
-    }
+        }
+    );
 };
 
 // run
