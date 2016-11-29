@@ -18,7 +18,7 @@ var postOptions = {
         "secret": ""+ config.secret +""
     }
 };
-https:///api/blocks/getStatus
+
 var chooseNode = function() {
     return new Promise(function (resolve, reject) {
         request('http://testnet.lisk.io/api/peers?state=2&orderBy=height:desc', function (error, response, body) {
