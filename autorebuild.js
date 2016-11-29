@@ -24,8 +24,16 @@ var chooseNode = function() {
         request('http://' + config.node + '/api/peers?state=2&orderBy=height:desc', function (error, response, body) {
             if (!error && response.statusCode == 200) {
                 var data = JSON.parse(body);
-                nodeToUse = data.peers[0].ip + ':7000';
-                resolve(nodeToUse);
+                checNodeToUse = data.peers[0].ip + ':7000';
+                request('http://' + checNodeToUse + '/api/peers?state=2&orderBy=height:desc', function (error, response, body) {
+                    if (!error && response.statusCode == 200) {
+                        var data2 = JSON.parse(body);
+                        nodeToUse = data2.peers[0].ip + ':7000';
+                        resolve(nodeToUse);
+                    } else {
+                        reject(error);
+                    }
+                });
             } else {
                 reject(error);
             }
