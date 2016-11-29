@@ -25,7 +25,7 @@ var chooseNode = function() {
             if (!error && response.statusCode == 200) {
                 var data = JSON.parse(body);
                 checkNodeToUse = data.peers[0].ip + ':7000';
-                request('http://' + checkNodeToUse + '/api/peers?state=2&orderBy=height:asc', function (error, response, body) {
+                request('http://' + checkNodeToUse + '/api/peers?state=2&orderBy=height:desc', function (error, response, body) {
                     if (!error && response.statusCode == 200 && body!='Forbidden') {
                         nodeToUse = checkNodeToUse
                         resolve(nodeToUse);
