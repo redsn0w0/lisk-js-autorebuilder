@@ -18,10 +18,10 @@ var postOptions = {
         "secret": ""+ config.secret +""
     }
 };
-
+https:///api/blocks/getStatus
 var chooseNode = function() {
     return new Promise(function (resolve, reject) {
-        request('http://' + config.node + '/api/peers?state=2&orderBy=height:desc', function (error, response, body) {
+        request('http://testnet.lisk.io/api/peers?state=2&orderBy=height:desc', function (error, response, body) {
             if (!error && response.statusCode == 200) {
                 var data = JSON.parse(body);
                 checkNodeToUse = data.peers[0].ip + ':7000';
