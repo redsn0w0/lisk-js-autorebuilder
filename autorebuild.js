@@ -25,10 +25,8 @@ var chooseNode = function() {
             if (!error && response.statusCode == 200) {
                 var data = JSON.parse(body);
                 checkNodeToUse = data.peers[0].ip + ':7000';
-                console.log('checNodeToUse ' + checkNodeToUse)
                 request('http://' + checkNodeToUse + '/api/peers?state=2&orderBy=height:desc', function (error, response, body) {
                     if (!error && response.statusCode == 200 && body!='Forbidden') {
-                        console.log(response.statusCode)
                         nodeToUse = checkNodeToUse
                         resolve(nodeToUse);
                     } else {
@@ -76,7 +74,6 @@ t.on("line", data => {
 var checkBlocks = function() {
     // blocks scheduler for alerts
     chooseNode().then(function(res) {
-        console.log(nodeToUse);
         request('http://' + nodeToUse + '/api/delegates/?limit=101&offset=0&orderBy=rate:asc', function (error, response, body) {
             // getting all delegates
             if (!error && response.statusCode == 200) {
