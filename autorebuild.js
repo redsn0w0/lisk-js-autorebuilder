@@ -80,11 +80,11 @@ var checkBlocks = function() {
                     }
                 }
                 // checking blocks
-                request('http://' + config.node + '/api/blocks?limit=100&orderBy=height:desc', function (error, response, body) {
+                request('http://' + res + '/api/blocks?limit=100&orderBy=height:desc', function (error, response, body) {
                     if (!error && response.statusCode == 200) {
                         var data = JSON.parse(body);
                         // checking blocks shifting by 100
-                        request('http://' + config.node + '/api/blocks?limit=100&offset=100&orderBy=height:desc', function (error, response, body) {
+                        request('http://' + res + '/api/blocks?limit=100&offset=100&orderBy=height:desc', function (error, response, body) {
                             if (!error && response.statusCode == 200) {
                                 var data2 = JSON.parse(body);
                                 data.blocks = data.blocks.concat(data2.blocks);
