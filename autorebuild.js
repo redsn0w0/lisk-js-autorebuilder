@@ -30,11 +30,11 @@ var chooseNode = function() {
                         nodeToUse = checkNodeToUse
                         resolve(nodeToUse);
                     } else {
-                        reject(error);
+                        reject('Node dropped');
                     }
                 });
             } else {
-                reject(error);
+                reject('testnet.lisk.io has some problem');
             }
         });
     });
@@ -137,7 +137,7 @@ var checkBlocks = function() {
             }
         });
     }, function (err) {
-        console.log(err)
+        console.log("[" + new Date().toString() + "] | " + err)
         }
     );
 };
