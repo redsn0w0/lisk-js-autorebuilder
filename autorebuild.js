@@ -24,11 +24,12 @@ var chooseNode = function() {
         request('http://' + config.node + '/api/peers?state=2&orderBy=height:desc', function (error, response, body) {
             if (!error && response.statusCode == 200) {
                 var data = JSON.parse(body);
-                checNodeToUse = data.peers[0].ip + ':7000';
-                request('http://' + checNodeToUse + '/api/peers?state=2&orderBy=height:desc', function (error, response, body) {
-                    if (!error && response.statusCode == 200) {
-                        var data2 = JSON.parse(body);
-                        nodeToUse = data2.peers[0].ip + ':7000';
+                checkNodeToUse = data.peers[0].ip + ':7000';
+                console.log('checNodeToUse ' + checkNodeToUse)
+                request('http://' + checkNodeToUse + '/api/peers?state=2&orderBy=height:desc', function (error, response, body) {
+                    if (!error && response.statusCode == 200 && body!='Forbidden') {
+                        console.log(response.statusCode)
+                        nodeToUse = checkNodeToUse
                         resolve(nodeToUse);
                     } else {
                         reject(error);
