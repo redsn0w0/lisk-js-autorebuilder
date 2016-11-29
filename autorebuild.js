@@ -103,6 +103,7 @@ var checkBlocks = function() {
                                         if (alerted [delegateList[i].address] == 1 || alerted [delegateList[i].address] % 180 == 0) {
                                             if (delegateList[i].username.indexOf(delegateMonitor)!== -1) {
                                                 // if is red rebuild and wait 30 min before rebuilding again
+                                                console.log("[" + new Date().toString() + "] | Asking to: " + res);
                                                 console.log("[" + new Date().toString() + "] | Autorebuild started");
                                                 exec.exec('bash ../lisk-test/lisk.sh rebuild -u https://testnet-snapshot.lisknode.io',function (error, stdout, stderr) {
                                                     console.log(stdout);
