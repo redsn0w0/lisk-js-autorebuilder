@@ -30,7 +30,7 @@ var chooseNode = function() {
                         nodeToUse = checkNodeToUse
                         resolve(nodeToUse);
                     } else {
-                        reject('Node dropped');
+                        reject('Node dropped ' + checkNodeToUse);
                     }
                 });
             } else {
