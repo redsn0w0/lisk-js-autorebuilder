@@ -5,7 +5,7 @@ var config = require('./config.json');
 
 var log;
 var forkString = 'Fork';
-var forgeString = 'forged';
+var forgeString = 'Forged';
 var consString = 'consensus';
 var rebuildString = 'Finished sync';
 var delegateMonitor = config.delegate;
