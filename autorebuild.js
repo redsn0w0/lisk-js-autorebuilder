@@ -9,7 +9,7 @@ var rebuildString = 'Finished sync';
 var delegateMonitor = config.delegate;
 var alerted = {};
 var nodeToUse = '';
-var t = new tail("../lisk-test/logs/lisk.log");
+var t = new tail("../lisk-main/logs/lisk.log");
 
 var postOptions = {
     uri: 'http://'+ config.node +'/api/delegates/forging/enable',
@@ -21,7 +21,7 @@ var postOptions = {
 
 var chooseNode = function() {
     return new Promise(function (resolve, reject) {
-        request('http://testnet.lisk.io/api/peers?state=2&orderBy=height:desc', function (error, response, body) {
+        request('http://login.lisk.io/api/peers?state=2&orderBy=height:desc', function (error, response, body) {
             if (!error && response.statusCode == 200) {
                 var data = JSON.parse(body);
                 checkNodeToUse = data.peers[0].ip + ':7000';
@@ -112,7 +112,7 @@ var checkBlocks = function() {
                                                 // if is red rebuild and wait 30 min before rebuilding again
                                                 console.log("[" + new Date().toString() + "] | Asking to: " + nodeToUse);
                                                 console.log("[" + new Date().toString() + "] | Autorebuild started");
-                                                exec.exec('bash ../lisk-test/lisk.sh rebuild -u https://testnet-snapshot.lisknode.io',function (error, stdout, stderr) {
+                                                exec.exec('bash ../lisk-main/lisk.sh rebuild -u https://snapshot.lisknode.io',function (error, stdout, stderr) {
                                                     console.log(stdout);
                                                     if (error !== null) {
                                                         console.log('exec error: ' + error);
