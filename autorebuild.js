@@ -5,6 +5,8 @@ var config = require('./config.json');
 
 var log;
 var forkString = 'Fork';
+var forgeString = 'forged';
+var consString = 'consensus';
 var rebuildString = 'Finished sync';
 var delegateMonitor = config.delegate;
 var alerted = {};
@@ -21,7 +23,7 @@ var postOptions = {
 
 var chooseNode = function() {
     return new Promise(function (resolve, reject) {
-        request('http://login.lisk.io/api/peers?state=2&orderBy=height:desc', function (error, response, body) {
+        request('http://46.16.190.190:8000/api/peers?state=2&orderBy=height:desc', function (error, response, body) {
             if (!error && response.statusCode == 200) {
                 var data = JSON.parse(body);
                 checkNodeToUse = data.peers[0].ip + ':8000';
@@ -57,8 +59,16 @@ t.watch()
 t.on("line", data => {
     log = data;
     if(log.indexOf(forkString) !== -1) {
-        console.log("[" + new Date().toString() + "] | Fork line finded in lisk.log\n");
-        console.log(data);
+        console.log("\n[" + new Date().toString() + "] | Fork line finded in lisk.log");
+        console.log(data+"\n");
+    }
+    if(log.indexOf(forgeString) !== -1) {
+        console.log("\n[" + new Date().toString() + "] | Block forged");
+        console.log(data+"\n");
+    }
+    if(log.indexOf(consString) !== -1) {
+        console.log("[" + new Date().toString() + "] | Consensus\n");
+        console.log(data+"\n");
     }
     if(log.indexOf(rebuildString) !== -1) {
         console.log("[" + new Date().toString() + "] | Sync finished, enabling forging");
@@ -110,7 +120,7 @@ var checkBlocks = function() {
                                         if (alerted [delegateList[i].address] == 1 || alerted [delegateList[i].address] % 180 == 0) {
                                             if (delegateList[i].username.indexOf(delegateMonitor)!== -1) {
                                                 // if is red rebuild and wait 30 min before rebuilding again
-                                                console.log("[" + new Date().toString() + "] | Asking to: " + nodeToUse);
+                                                console.log("\n[" + new Date().toString() + "] | Asked to: " + nodeToUse);
                                                 console.log("[" + new Date().toString() + "] | Autorebuild started");
                                                 exec.exec('bash ../lisk-main/lisk.sh rebuild -u https://snapshot.lisknode.io',function (error, stdout, stderr) {
                                                     console.log(stdout);
