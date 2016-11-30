@@ -24,7 +24,7 @@ var chooseNode = function() {
         request('http://login.lisk.io/api/peers?state=2&orderBy=height:desc', function (error, response, body) {
             if (!error && response.statusCode == 200) {
                 var data = JSON.parse(body);
-                checkNodeToUse = data.peers[0].ip + ':7000';
+                checkNodeToUse = data.peers[0].ip + ':8000';
                 request('http://' + checkNodeToUse + '/api/peers?state=2&orderBy=height:desc', function (error, response, body) {
                     if (!error && response.statusCode == 200 && body!='Forbidden') {
                         nodeToUse = checkNodeToUse
