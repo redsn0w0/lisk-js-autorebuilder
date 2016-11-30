@@ -1,5 +1,5 @@
 {
-	"node": "localhost:7000",
+	"node": "localhost:8000",
     "delegate":"nameOfYourDelegate",
 	"secret":"superSecretPasswd"
 }
