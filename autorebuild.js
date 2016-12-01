@@ -12,7 +12,7 @@ var delegateMonitor = config.delegate;
 var alerted = {};
 var nodeToUse = '';
 var t = new tail("../lisk-main/logs/lisk.log");
-
+var x = 0;
 var postOptions = {
     uri: 'http://'+ config.node +'/api/delegates/forging/enable',
     method: 'POST',
@@ -26,7 +26,16 @@ var chooseNode = function() {
         request('http://46.16.190.190:8000/api/peers?state=2&orderBy=height:desc', function (error, response, body) {
             if (!error && response.statusCode == 200) {
                 var data = JSON.parse(body);
-                checkNodeToUse = data.peers[0].ip + ':8000';
+		while(x < data.peers.length) {
+			if(data.peers[x].height == null){
+				x+=1
+			} else {
+				checkNodeToUse = data.peers[x].ip + ':8000';
+                                x=0;
+				break;
+			}
+		}
+                //checkNodeToUse = data.peers[0].ip + ':8000';
                 request('http://' + checkNodeToUse + '/api/peers?state=2&orderBy=height:desc', function (error, response, body) {
                     if (!error && response.statusCode == 200 && body!='Forbidden') {
                         nodeToUse = checkNodeToUse
