@@ -23,7 +23,7 @@ var postOptions = {
 
 var chooseNode = function() {
     return new Promise(function (resolve, reject) {
-        request('http://46.16.190.190:8000/api/peers?state=2&orderBy=height:desc', function (error, response, body) {
+        request('http://45.32.224.205:8000/api/peers?state=2&orderBy=height:desc', function (error, response, body) {
             if (!error && response.statusCode == 200) {
                 var data = JSON.parse(body);
 		while(x < data.peers.length) {
