@@ -183,9 +183,17 @@ var checkReload = function() {
             checklHeight(config.node).then(function(res) {
                 console.log("\n[" + new Date().toString() + "] | Checked node height: " + choosedNode);
                 console.log("[" + new Date().toString() + "] | Your node height: " + res);
-                console.log("[" + new Date().toString() + "] | Diff height: " + (choosedNode - res));
-                if((choosedNode - res)>=4)
-                    console.log("[" + new Date().toString() + "] | Need reload");
+                console.log("[" + new Date().toString() + "] | Diff height: " + (choosedNode - res) + "\n");
+                if((choosedNode - res)>=4) {
+                    console.log("\n[" + new Date().toString() + "] | Height difference > 4");
+                    console.log("[" + new Date().toString() + "] | Reloading Lisk");
+                    exec.exec('bash ../lisk-main/lisk.sh reload',function (error, stdout, stderr) {
+                        console.log(stdout);
+                        if (error !== null) {
+                            console.log('exec error: ' + error);
+                        }
+                    });
+                }
             }, function (err) {
                 console.log("[" + new Date().toString() + "] | " + err)
             });
