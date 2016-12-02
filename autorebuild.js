@@ -209,5 +209,4 @@ var checkReload = function() {
 checkBlocks ();
 setInterval (checkBlocks, 10000);
 
-checkReload();
 setInterval (checkReload, (config.minutsOfCheckHeight * 60 * 1000));
