@@ -11,6 +11,7 @@ var rebuildString = 'Finished sync';
 var delegateMonitor = config.delegate;
 var alerted = {};
 var nodeToUse = '';
+var delayBlock = 0;
 var t = new tail("../lisk-main/logs/lisk.log");
 var x = 0;
 var postOptions = {
@@ -21,20 +22,33 @@ var postOptions = {
     }
 };
 
+var checklHeight = function(node) {
+    return new Promise(function (resolve, reject) {
+        request('http://'+ node +'/api/loader/status/sync', function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+                var data = JSON.parse(body);
+                resolve(data.blocks);
+            } else {
+                reject('localhost has some problem');
+            }
+        });
+    });
+}
+
 var chooseNode = function() {
     return new Promise(function (resolve, reject) {
         request('http://45.32.224.205:8000/api/peers?state=2&orderBy=height:desc', function (error, response, body) {
             if (!error && response.statusCode == 200) {
                 var data = JSON.parse(body);
-		while(x < data.peers.length) {
-			if(data.peers[x].height == null){
-				x+=1
-			} else {
-				checkNodeToUse = data.peers[x].ip + ':8000';
-                                x=0;
-				break;
-			}
-		}
+                while(x < data.peers.length) {
+                    if(data.peers[x].height == null){
+                        x+=1
+                    } else {
+                        checkNodeToUse = data.peers[x].ip + ':8000';
+                        x=0;
+                        break;
+                    }
+                }
                 //checkNodeToUse = data.peers[0].ip + ':8000';
                 request('http://' + checkNodeToUse + '/api/peers?state=2&orderBy=height:desc', function (error, response, body) {
                     if (!error && response.statusCode == 200 && body!='Forbidden') {
@@ -157,10 +171,34 @@ var checkBlocks = function() {
         });
     }, function (err) {
         console.log("[" + new Date().toString() + "] | " + err)
-        }
-    );
+    }
+);
 };
+
+var checkReload = function() {
+    chooseNode().then(function(res) {
+        checklHeight(res).then(function(res) {
+            var choosedNode = res;
+            checklHeight(config.node).then(function(res) {
+                console.log("[" + new Date().toString() + "] | Checked node height: " + choosedNode);
+                console.log("[" + new Date().toString() + "] | Your node height: " + res);
+                console.log("[" + new Date().toString() + "] | Diff height: " + (choosedNode - res));
+                if((choosedNode - res)>=4)
+                    console.log("[" + new Date().toString() + "] | Need reload");
+            }, function (err) {
+                console.log("[" + new Date().toString() + "] | " + err)
+            });
+        }, function (err) {
+            console.log("[" + new Date().toString() + "] | " + err)
+        })
+    }, function (err) {
+        console.log("[" + new Date().toString() + "] | " + err)
+    })
+}
 
 // run
 checkBlocks ();
 setInterval (checkBlocks, 10000);
+
+checkReload();
+setInterval (checkReload, 10000);
