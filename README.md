@@ -22,7 +22,7 @@ In the cloned lisk-js-autorebuilder do as follow:
     - edit the config.json
             "delegate":"nameOfYourDelegate",
             "secret":"superSecretPasswd"
-            "reloadTollerance":"(integer) Number of diff block tollerance" --> if your node is 
+            "reloadTollerance":"(integer) Number of diff block tollerance compared to the higher blockchain height"
     - npm install
 
 ##Run

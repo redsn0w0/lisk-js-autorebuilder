@@ -210,4 +210,4 @@ checkBlocks ();
 setInterval (checkBlocks, 10000);
 
 checkReload();
-setInterval (checkReload, 300000);
+setInterval (checkReload, (config.minutsOfCheckHeight * 60 * 1000));
