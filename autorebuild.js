@@ -38,7 +38,7 @@ var checklHeight = function(node) {
 
 var chooseNode = function() {
     return new Promise(function (resolve, reject) {
-        request('http://45.32.224.205:8000/api/peers?state=2&orderBy=height:desc', function (error, response, body) {
+        request('http://' + config.nodeToCompareWith + '/api/peers?state=2&orderBy=height:desc', function (error, response, body) {
             if (!error && response.statusCode == 200) {
                 var data = JSON.parse(body);
                 while(x < data.peers.length) {
@@ -186,13 +186,13 @@ var checkReload = function() {
                 console.log("[" + new Date().toString() + "] | Diff height: " + (choosedNode - res) + "\n");
                 if((choosedNode - res)>=4) {
                     console.log("\n[" + new Date().toString() + "] | Height difference > 4");
-                    console.log("[" + new Date().toString() + "] | Reloading Lisk");
-                    exec.exec('bash ../lisk-main/lisk.sh reload',function (error, stdout, stderr) {
-                        console.log(stdout);
-                        if (error !== null) {
-                            console.log('exec error: ' + error);
-                        }
-                    });
+                    console.log("[" + new Date().toString() + "] | Reload Lisk");
+                    // exec.exec('bash ../lisk-main/lisk.sh reload',function (error, stdout, stderr) {
+                    //     console.log(stdout);
+                    //     if (error !== null) {
+                    //         console.log('exec error: ' + error);
+                    //     }
+                    // });
                 }
             }, function (err) {
                 console.log("[" + new Date().toString() + "] | " + err)
