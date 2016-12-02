@@ -13,6 +13,7 @@ var alerted = {};
 var nodeToUse = '';
 var delayBlock = 0;
 var t = new tail("../lisk-main/logs/lisk.log");
+//var t = new tail("../lisk-test/logs/lisk.log");
 var x = 0;
 var postOptions = {
     uri: 'http://'+ config.node +'/api/delegates/forging/enable',
@@ -27,9 +28,9 @@ var checklHeight = function(node) {
         request('http://'+ node +'/api/loader/status/sync', function (error, response, body) {
             if (!error && response.statusCode == 200) {
                 var data = JSON.parse(body);
-                resolve(data.blocks);
+                resolve(data.height);
             } else {
-                reject('localhost has some problem');
+                reject('checklHeight has some problem');
             }
         });
     });
@@ -180,7 +181,7 @@ var checkReload = function() {
         checklHeight(res).then(function(res) {
             var choosedNode = res;
             checklHeight(config.node).then(function(res) {
-                console.log("[" + new Date().toString() + "] | Checked node height: " + choosedNode);
+                console.log("\n[" + new Date().toString() + "] | Checked node height: " + choosedNode);
                 console.log("[" + new Date().toString() + "] | Your node height: " + res);
                 console.log("[" + new Date().toString() + "] | Diff height: " + (choosedNode - res));
                 if((choosedNode - res)>=4)
