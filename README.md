@@ -3,6 +3,8 @@
 
 The script will check if your delegate is forging, if not it will rebuild with last available snapshot and activate the forging ones the sync is completed.
 
+It will also check if your blockchain is the sync compared to the higher one found. If is not sync the script will reload Lisk.
+
     - forever-autorebuild.log
 
 The file is a collection of your delegate node fork | autorebuild | forging events
