@@ -83,7 +83,7 @@ t.watch()
 t.on("line", data => {
     log = data;
     if(log.indexOf(forkString) !== -1) {
-        console.log("\n[" + new Date().toString() + "] | Fork line finded in lisk.log");
+        console.log("\n[" + new Date().toString() + "] | Fork line found in lisk.log");
         console.log(data+"\n");
     }
     if(log.indexOf(forgeString) !== -1) {
