@@ -10,9 +10,11 @@ The file is a collection of your delegate node fork | autorebuild | forging even
 ##Install
 Clone the repository in the same directory of lisk installation folder, for instance:
 
+```
 /HOME DIRECTORY
     /lisk-test
     /lisk-js-autorebuilder
+```
 
 In the lisk-test (the lisk installation folder) check 127.0.0.1 is in the forging whitelist section in the config.json
 In the cloned lisk-js-autorebuilder do as follow:
