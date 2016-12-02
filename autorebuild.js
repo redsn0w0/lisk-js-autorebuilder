@@ -187,12 +187,12 @@ var checkReload = function() {
                 if((choosedNode - res)>=4) {
                     console.log("\n[" + new Date().toString() + "] | Height difference > 4");
                     console.log("[" + new Date().toString() + "] | Reload Lisk");
-                    // exec.exec('bash ../lisk-main/lisk.sh reload',function (error, stdout, stderr) {
-                    //     console.log(stdout);
-                    //     if (error !== null) {
-                    //         console.log('exec error: ' + error);
-                    //     }
-                    // });
+                    exec.exec('bash ../lisk-main/lisk.sh reload',function (error, stdout, stderr) {
+                        console.log(stdout);
+                        if (error !== null) {
+                            console.log('exec error: ' + error);
+                        }
+                    });
                 }
             }, function (err) {
                 console.log("[" + new Date().toString() + "] | " + err)
@@ -210,4 +210,4 @@ checkBlocks ();
 setInterval (checkBlocks, 10000);
 
 checkReload();
-setInterval (checkReload, 10000);
+setInterval (checkReload, 300000);
