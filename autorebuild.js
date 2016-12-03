@@ -13,6 +13,7 @@ var alerted = {};
 var nodeToUse = '';
 var delayBlock = 0;
 var t = new tail("../lisk-main/logs/lisk.log");
+var pauseReload = false;
 //var t = new tail("../lisk-test/logs/lisk.log");
 var x = 0;
 var postOptions = {
@@ -96,6 +97,7 @@ t.on("line", data => {
     }
     if(log.indexOf(rebuildString) !== -1) {
         console.log("[" + new Date().toString() + "] | Sync finished, enabling forging");
+        pauseReload = false;
         enableForging().then(function(res) {
             console.log("[" + new Date().toString() + "] | " + res + "\n");
         }, function (err) {
@@ -193,6 +195,7 @@ var checkReload = function() {
                             console.log('exec error: ' + error);
                         }
                     });
+                    pauseReload = true;
                 }
             }, function (err) {
                 console.log("[" + new Date().toString() + "] | " + err)
@@ -209,4 +212,5 @@ var checkReload = function() {
 checkBlocks ();
 setInterval (checkBlocks, 10000);
 
-setInterval (checkReload, (config.minutsOfCheckHeight * 60 * 1000));
+if(pauseReload == false)
+    setInterval (checkReload, (config.minutsOfCheckHeight * 60 * 1000));
