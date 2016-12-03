@@ -1,21 +1,25 @@
+// require
 var tail = require('tail').Tail;
 var exec = require('child_process');
 var request = require ('request');
 var config = require('./config.json');
 
-var log;
+// logger
+var log = '';
 var forkString = 'Fork';
 var forgeString = 'Forged';
 var consString = 'consensus';
 var rebuildString = 'Finished sync';
+var t = new tail("../lisk-test/logs/lisk.log");
+
+// check missed turn
 var delegateMonitor = config.delegate;
 var alerted = {};
 var nodeToUse = '';
-var delayBlock = 0;
-//var t = new tail("../lisk-main/logs/lisk.log");
 var pauseReload = false;
-var t = new tail("../lisk-test/logs/lisk.log");
 var x = 0;
+
+// enable forging POST option
 var postOptions = {
     uri: 'http://'+ config.node +'/api/delegates/forging/enable',
     method: 'POST',
@@ -46,12 +50,11 @@ var chooseNode = function() {
                     if(data.peers[x].height == null){
                         x+=1
                     } else {
-                        checkNodeToUse = data.peers[x].ip + ':8000';
+                        checkNodeToUse = data.peers[x].ip + ':7000';
                         x=0;
                         break;
                     }
                 }
-                //checkNodeToUse = data.peers[0].ip + ':8000';
                 request('http://' + checkNodeToUse + '/api/peers?state=2&orderBy=height:desc', function (error, response, body) {
                     if (!error && response.statusCode == 200 && body!='Forbidden') {
                         nodeToUse = checkNodeToUse
@@ -148,7 +151,7 @@ var checkBlocks = function() {
                                                 // if is red rebuild and wait 30 min before rebuilding again
                                                 console.log("\n[" + new Date().toString() + "] | Asked to: " + nodeToUse);
                                                 console.log("[" + new Date().toString() + "] | Autorebuild started");
-                                                exec.exec('bash ../lisk-main/lisk.sh rebuild -u https://snapshot.lisknode.io',function (error, stdout, stderr) {
+                                                exec.exec('bash ../lisk-test/lisk.sh rebuild -u https://testnet-snapshot.lisknode.io',function (error, stdout, stderr) {
                                                     console.log(stdout);
                                                     if (error !== null) {
                                                         console.log('exec error: ' + error);
@@ -213,4 +216,4 @@ checkBlocks ();
 setInterval (checkBlocks, 10000);
 
 if(pauseReload == false)
-    //setInterval (checkReload, (config.minutsOfCheckHeight * 60 * 1000));
+    setInterval (checkReload, (config.minutsOfCheckHeight * 60 * 1000));
