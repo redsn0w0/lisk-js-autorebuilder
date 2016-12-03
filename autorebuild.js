@@ -12,9 +12,9 @@ var delegateMonitor = config.delegate;
 var alerted = {};
 var nodeToUse = '';
 var delayBlock = 0;
-var t = new tail("../lisk-main/logs/lisk.log");
+//var t = new tail("../lisk-main/logs/lisk.log");
 var pauseReload = false;
-//var t = new tail("../lisk-test/logs/lisk.log");
+var t = new tail("../lisk-test/logs/lisk.log");
 var x = 0;
 var postOptions = {
     uri: 'http://'+ config.node +'/api/delegates/forging/enable',
@@ -213,4 +213,4 @@ checkBlocks ();
 setInterval (checkBlocks, 10000);
 
 if(pauseReload == false)
-    setInterval (checkReload, (config.minutsOfCheckHeight * 60 * 1000));
+    //setInterval (checkReload, (config.minutsOfCheckHeight * 60 * 1000));
